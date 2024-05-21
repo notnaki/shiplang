@@ -33,6 +33,8 @@ func Evaluate(node ast.Stmt, env *environment) RuntimeVal {
 		return eval_foreach_stmt(n, env)
 	case ast.ForStmt:
 		return eval_for_stmt(n, env)
+	case ast.ImportStmt:
+		return eval_import_stmt(n, env)
 
 	default:
 		panic(fmt.Sprintf("This Stmt Node has not yet been set up for interpretation.\n %s", node))

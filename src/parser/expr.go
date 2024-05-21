@@ -14,7 +14,7 @@ func parse_expr(p *parser, bp binding_power) ast.Expr {
 	nud_fn, exists := nud_lu[tkind]
 
 	if !exists {
-		panic("Not impl nud handler")
+		panic(fmt.Sprintf("Not impl nud handler for %s", lexer.TokenKindString(tkind)))
 	}
 
 	left := nud_fn(p)

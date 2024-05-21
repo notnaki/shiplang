@@ -38,7 +38,7 @@ show(date());
 
 
 //show(date());
-let x = false;
+//let x = false;
 //
 //if (x == 10) {
 //    show("x is 10");
@@ -54,7 +54,7 @@ let x = false;
 //}
 
 
-show(x);
+//show(x);
 
 //let t:number = 0;
 //
@@ -66,13 +66,13 @@ show(x);
 //
 //let g:[]number = []number{0,5,10,20,40,60};
 //
-let greetings: any = []string{"hey","hello"};
-let f = 10;
-foreach (greet in greetings) {
-    f += 1;
-    show(f);
-}
-show(f);
+//let greetings: any = []string{"hey","hello"};
+//let f = 10;
+//foreach (greet in greetings) {
+//    f += 1;
+//    show(f);
+//}
+//show(f);
 
 
 //for (let i = 1; i <= 1000; i++;){
@@ -82,3 +82,7 @@ show(f);
 //}
 
 
+import {g, hey} from "examples/00.sp";
+//import "examples/00.sp";
+
+show(g);

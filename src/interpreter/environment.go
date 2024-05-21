@@ -228,3 +228,18 @@ func (e *environment) delete_variable(varName string) {
 	delete(e.Variables, varName)
 	delete(e.Constants, varName) // If the variable is also a constant, remove it from the constants map
 }
+
+func isDefaultVariable(varName string) bool {
+	defaultVariables := map[string]struct{}{
+		"true":  {},
+		"false": {},
+		"null":  {},
+		"show":  {},
+		"time":  {},
+		"date":  {},
+		"sleep": {},
+		"range": {},
+	}
+	_, isDefault := defaultVariables[varName]
+	return isDefault
+}

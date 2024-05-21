@@ -2,7 +2,10 @@ package interpreter
 
 import (
 	"fmt"
+	"os"
 	"shipgo/src/ast"
+	"shipgo/src/lexer"
+	"shipgo/src/parser"
 )
 
 func eval_block_stmt(s ast.BlockStmt, env *environment) RuntimeVal {
@@ -177,6 +180,54 @@ func eval_for_stmt(f ast.ForStmt, env *environment) RuntimeVal {
 
 		if f.Post != nil {
 			Evaluate(f.Post, loopEnv)
+		}
+	}
+
+	return MKNULL()
+}
+
+func eval_import_stmt(im ast.ImportStmt, env *environment) RuntimeVal {
+	var bytes []byte
+	var err error
+
+	moduleEnv := CreateGlobalEnv()
+
+	bytes, err = os.ReadFile(im.FilePath)
+	if err != nil {
+
+		panic(fmt.Sprintf("Error reading file: %s", err))
+	}
+
+	// Continue processing the file since no error occurred
+	tokens := lexer.Tokenize(string(bytes))
+	ast := parser.Parse(tokens)
+
+	// Evaluate the parsed AST in the current environment
+	Evaluate(ast, moduleEnv)
+
+	if len(im.Modules) > 0 {
+
+		for _, moduleName := range im.Modules {
+
+			valStruct, ok := moduleEnv.lookup_struct(moduleName)
+			if !ok {
+				valVar := moduleEnv.lookup_var(moduleName).(Variable)
+				_, isConst := moduleEnv.Constants[moduleName]
+				env.declare_var(moduleName, valVar.Value, valVar.VarType, isConst)
+			} else {
+				env.declare_struct(valStruct.(Struct).Name, valStruct.(Struct).Properties)
+			}
+
+		}
+	} else {
+		for varName, varValue := range moduleEnv.Variables {
+			if !isDefaultVariable(varName) && varValue.VarType != NativeFnType {
+				_, isConst := moduleEnv.Constants[varName]
+				env.declare_var(varName, varValue.Value, varValue.VarType, isConst)
+			}
+		}
+		for structName, structProps := range moduleEnv.StructDefs {
+			env.declare_struct(structName, structProps.Properties)
 		}
 	}
 

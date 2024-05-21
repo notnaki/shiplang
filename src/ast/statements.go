@@ -91,3 +91,10 @@ type ForStmt struct {
 }
 
 func (i ForStmt) stmt() {}
+
+type ImportStmt struct {
+	Modules  []string
+	FilePath string
+}
+
+func (i ImportStmt) stmt() {}

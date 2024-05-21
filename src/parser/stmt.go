@@ -139,6 +139,56 @@ func parse_struct_decl_stmt(p *parser) ast.Stmt {
 	}
 }
 
+func parse_import_stmt(p *parser) ast.Stmt {
+	p.expect(lexer.IMPORT)
+
+	var modules []string
+
+	// Check if there's a module name or list of module names
+	if p.currentTokenKind() == lexer.IDENTIFIER {
+		// Single module name import
+		modules = append(modules, p.currentToken().Value)
+		p.advance()
+	} else if p.currentTokenKind() == lexer.OPEN_CURLY {
+		// Multiple module names import
+		p.expect(lexer.OPEN_CURLY)
+		for {
+			if p.currentTokenKind() == lexer.IDENTIFIER {
+				modules = append(modules, p.expect(lexer.IDENTIFIER).Value)
+
+				// Check if there are more module names to parse
+				if p.currentTokenKind() != lexer.COMMA {
+					break
+				}
+				p.expect(lexer.COMMA)
+			} else {
+				panic("Expected identifier within '{ }' for 'from' imports")
+			}
+		}
+		p.expect(lexer.CLOSE_CURLY)
+	}
+
+	// Check if there's a "from" keyword
+	if len(modules) > 0 {
+		p.expectError(lexer.FROM, "Expected 'from' keyword after module names")
+	} else if len(modules) == 0 && p.currentTokenKind() == lexer.FROM {
+		panic("Unexpected 'from' keyword without module names")
+	}
+
+	// Consume the "from" keyword
+	// if p.currentTokenKind() == lexer.FROM {
+	// 	p.advance()
+	// }
+
+	// Expect and parse the file path
+
+	path := p.expectError(lexer.STRING, "Expected string literal for file path").Value
+
+	p.expectError(lexer.SEMI_COLON, "Expected semicolon after import statement")
+
+	return ast.ImportStmt{Modules: modules, FilePath: path}
+}
+
 // fn hello(){}
 // parse_fn_decl_stmt parses a function declaration statement
 func parse_fn_decl_stmt(p *parser) ast.Stmt {
@@ -203,7 +253,6 @@ func parse_return_stmt(p *parser) ast.Stmt {
 	return ast.ReturnStmt{
 		Value: returnval,
 	}
-
 }
 
 func parse_while_stmt(p *parser) ast.Stmt {
