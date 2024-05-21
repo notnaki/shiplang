@@ -1,31 +1,55 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"os"
 
 	"shipgo/src/interpreter"
 	"shipgo/src/lexer"
 	"shipgo/src/parser"
+
+	"github.com/sanity-io/litter"
 )
 
 func main() {
 
-	bytes, _ := os.ReadFile("./examples/01.sp")
-	tokens := lexer.Tokenize(string(bytes))
+	dumpTokens := flag.Bool("tokens", false, "Dump generated tokens")
+	dumpAST := flag.Bool("ast", false, "Dump generated AST")
+	dumpEnv := flag.Bool("env", false, "Dump generated environment")
 
+	flag.Parse()
+
+	if flag.NArg() == 0 {
+		fmt.Println("Usage: go run main.go [--tokens] [--ast] [--env] <filename>")
+		os.Exit(1)
+	}
+
+	filename := flag.Arg(0)
+
+	bytes, err := os.ReadFile(filename)
+	if err != nil {
+		fmt.Printf("Error reading file: %v\n", err)
+		os.Exit(1)
+	}
+
+	tokens := lexer.Tokenize(string(bytes))
 	ast := parser.Parse(tokens)
 	env := interpreter.CreateGlobalEnv()
-	// println("--------------- Generated Tokens ---------------")
-	// litter.Dump(tokens)
-	// println("--------------- Generated Ast ---------------")
-	// litter.Dump(ast)
 	interpreter.Evaluate(ast, env)
 
-	// println("--------------- Generated Env ---------------")
-	// litter.Dump(env)
+	if *dumpTokens {
+		fmt.Println("--------------- Generated Tokens ---------------")
+		litter.Dump(tokens)
+	}
 
-	// println("--------------- Generated Result ---------------")
+	if *dumpAST {
+		fmt.Println("--------------- Generated AST ---------------")
+		litter.Dump(ast)
+	}
 
-	// litter.Dump(res)
-
+	if *dumpEnv {
+		fmt.Println("--------------- Generated Env ---------------")
+		litter.Dump(env)
+	}
 }
