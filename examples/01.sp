@@ -66,15 +66,19 @@ show(x);
 //
 //let g:[]number = []number{0,5,10,20,40,60};
 //
-//let greetings: any = []string{"hey","hello"};
-//foreach (greet in greetings) {
-//    show(greet);
-//}
-
-for (let i = 1; i <= 1000; i++;){
-    if (i%10 == 0){
-        show(i);
-    }
+let greetings: any = []string{"hey","hello"};
+let f = 10;
+foreach (greet in greetings) {
+    f += 1;
+    show(f);
 }
+show(f);
+
+
+//for (let i = 1; i <= 1000; i++;){
+//    if (i%10 == 0){
+//        show(i);
+//    }
+//}
 
 

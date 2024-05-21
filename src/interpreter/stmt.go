@@ -136,24 +136,23 @@ func eval_while_stmt(w ast.WhileStmt, env *environment) RuntimeVal {
 func eval_foreach_stmt(f ast.ForeachStmt, env *environment) RuntimeVal {
 
 	collectionVal := eval_expr(f.Collection, env)
+	loopEnv := &environment{Variables: make(map[string]Variable), Parent: env}
 
-	env.declare_var(f.Iterator, MKNULL(), AnyType, false)
+	loopEnv.declare_var(f.Iterator, MKNULL(), AnyType, false)
 
 	switch collectionVal := collectionVal.(type) {
 	case Array:
 		for _, item := range collectionVal.Elements {
 
-			env.assign_var(f.Iterator, item.Value)
+			loopEnv.assign_var(f.Iterator, item.Value)
 
 			// Evaluate the body of the loop
-			eval_block_stmt(f.Body, env)
+			eval_block_stmt(f.Body, loopEnv)
 		}
 	default:
 
 		panic("Invalid foreach loop collection type")
 	}
-
-	env.delete_variable(f.Iterator)
 
 	return MKNULL()
 }
