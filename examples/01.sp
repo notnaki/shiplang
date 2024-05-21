@@ -82,7 +82,9 @@ show(date());
 //}
 
 
-import {g, hey} from "examples/00.sp";
+import {g, hey, Rest} from "examples/00.sp";
 //import "examples/00.sp";
 
+let f:Rest = Rest{msg:"go have some rest"};
 show(g);
+show(f.msg);

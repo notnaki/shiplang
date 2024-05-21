@@ -164,6 +164,17 @@ func (e *environment) contains_var(varName string) bool {
 	return exists
 }
 
+func (e *environment) resolve_struct(structName string) (Struct, bool) {
+	s, ok := e.StructDefs[structName]
+	if ok {
+		return s, true
+	}
+	if e.Parent != nil {
+		return e.Parent.resolve_struct(structName)
+	}
+	return Struct{}, false
+}
+
 func (e *environment) declare_struct(structName string, properties []Property) RuntimeVal {
 	s := Struct{Name: structName, Properties: properties}
 	e.StructDefs[structName] = s
@@ -171,7 +182,7 @@ func (e *environment) declare_struct(structName string, properties []Property) R
 }
 
 func (e *environment) lookup_struct(structName string) (RuntimeVal, bool) {
-	f, ok := e.StructDefs[structName]
+	f, ok := e.resolve_struct(structName)
 	return f, ok
 }
 
@@ -208,10 +219,8 @@ func (e *environment) assign_struct_member(varName string, memberName string, va
 		panic(fmt.Sprintf("Member %s not found in struct %s.", memberName, structInstance.StructName))
 	}
 
-	// Update the value of the specified member in the struct instance
 	structInstance.Properties[memberName] = value
 
-	// Update the variable in the environment with the modified struct instance
 	env.Variables[varName] = Variable{
 		VarType: varVariable.VarType,
 		Value:   structInstance,
@@ -226,7 +235,7 @@ func (e *environment) delete_variable(varName string) {
 	}
 
 	delete(e.Variables, varName)
-	delete(e.Constants, varName) // If the variable is also a constant, remove it from the constants map
+	delete(e.Constants, varName)
 }
 
 func isDefaultVariable(varName string) bool {
