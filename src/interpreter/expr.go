@@ -207,13 +207,8 @@ func truthify(val RuntimeVal) bool {
 
 func eval_call_expr(call ast.CallExpr, env *environment) RuntimeVal {
 
-	switch fnVal := env.Variables[call.FunctionName].Value.(type) {
+	switch fnVal := env.lookup_var(call.FunctionName).(Variable).Value.(type) {
 	case Function:
-		// fnVal, ok := env.Variables[call.FunctionName].Value.(Function)
-
-		// if !ok {
-		// 	panic(fmt.Sprintf("%s is not callable", call.FunctionName))
-		// }
 
 		if len(call.Arguments) != len(fnVal.Parameters) {
 
@@ -225,10 +220,6 @@ func eval_call_expr(call ast.CallExpr, env *environment) RuntimeVal {
 		}
 
 		callEnv := &environment{Variables: map[string]Variable{}, Parent: env}
-		for key, value := range env.Variables {
-			callEnv.Variables[key] = value
-		}
-
 		for i, param := range fnVal.Parameters {
 			callEnv.declare_var(param.ParamName, eval_expr(call.Arguments[i], callEnv), param.ParamType, false)
 		}

@@ -162,26 +162,24 @@ func eval_foreach_stmt(f ast.ForeachStmt, env *environment) RuntimeVal {
 
 func eval_for_stmt(f ast.ForStmt, env *environment) RuntimeVal {
 	// Evaluate initialization statement
+	loopEnv := &environment{Variables: make(map[string]Variable), Parent: env}
 	if f.Init != nil {
-		Evaluate(f.Init, env)
+		Evaluate(f.Init, loopEnv)
 	}
 
-	// Loop until condition evaluates to false
 	for {
-		// Evaluate condition expression
+
 		if f.Cond != nil {
-			cond := eval_expr(f.Cond, env)
+			cond := eval_expr(f.Cond, loopEnv)
 			if !truthify(cond) {
-				break // Exit loop if condition is false
+				break
 			}
 		}
 
-		// Evaluate loop body
-		eval_block_stmt(f.Body, env)
+		eval_block_stmt(f.Body, loopEnv)
 
-		// Evaluate post iteration statement
 		if f.Post != nil {
-			Evaluate(f.Post, env)
+			Evaluate(f.Post, loopEnv)
 		}
 	}
 
