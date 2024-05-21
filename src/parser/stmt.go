@@ -99,12 +99,12 @@ func parse_struct_decl_stmt(p *parser) ast.Stmt {
 
 	for p.hasTokens() && p.currentTokenKind() != lexer.CLOSE_CURLY {
 
-		var IsStatic bool
+		// var IsStatic bool
 		var propertyName string
-		if p.currentTokenKind() == lexer.STATIC {
-			IsStatic = true
-			p.expect(lexer.STATIC)
-		}
+		// if p.currentTokenKind() == lexer.STATIC {
+		// 	IsStatic = true
+		// 	p.expect(lexer.STATIC)
+		// }
 
 		if p.currentTokenKind() == lexer.IDENTIFIER {
 			propertyName = p.expect(lexer.IDENTIFIER).Value
@@ -120,8 +120,8 @@ func parse_struct_decl_stmt(p *parser) ast.Stmt {
 			}
 
 			properties[propertyName] = ast.StructProperty{
-				IsStatic: IsStatic,
-				Type:     structType,
+				// IsStatic: IsStatic,
+				Type: structType,
 			}
 
 			continue

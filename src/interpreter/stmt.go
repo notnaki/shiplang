@@ -157,8 +157,6 @@ func eval_foreach_stmt(f ast.ForeachStmt, env *environment) RuntimeVal {
 	return MKNULL()
 }
 
-// remove the init thing from the variables remove i
-
 func eval_for_stmt(f ast.ForStmt, env *environment) RuntimeVal {
 	// Evaluate initialization statement
 	loopEnv := &environment{Variables: make(map[string]Variable), Parent: env}

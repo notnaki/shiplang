@@ -22,8 +22,8 @@ type VarDeclStmt struct {
 func (n VarDeclStmt) stmt() {}
 
 type StructProperty struct {
-	IsStatic bool
-	Type     Type
+	// IsStatic bool
+	Type Type
 }
 
 type StructMethod struct {
