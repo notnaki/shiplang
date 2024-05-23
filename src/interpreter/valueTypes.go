@@ -15,6 +15,7 @@ const (
 	ReturnType       ValueType = "return"
 	VarType          ValueType = "variable"
 	ArrayElementType ValueType = "array-element"
+	BreakType        ValueType = "break"
 )
 
 func MKNULL() RuntimeVal {
@@ -35,4 +36,8 @@ func MKBOOL(b bool) RuntimeVal {
 
 func MKNATIVEFN(c FunctionCall) RuntimeVal {
 	return NativeFn{Call: c}
+}
+
+func MKBREAK() RuntimeVal {
+	return Break{}
 }

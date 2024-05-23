@@ -16,7 +16,7 @@ var type_bp_lu = bp_lookup{}
 var type_nud_lu = type_nud_lookup{}
 var type_led_lu = type_led_lookup{}
 
-func type_led(kind lexer.TokenKind, bp binding_power, led_fn type_led_handler) {
+func type_led(kind lexer.TokenKind, _ binding_power, led_fn type_led_handler) {
 	type_bp_lu[kind] = primary
 	type_led_lu[kind] = led_fn
 }

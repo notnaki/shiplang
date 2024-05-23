@@ -80,6 +80,7 @@ const (
 	STATIC
 
 	RETURN
+	BREAK
 
 	// Misc
 	NUM_TOKENS
@@ -104,6 +105,7 @@ var reserved_words map[string]TokenKind = map[string]TokenKind{
 	"struct":  STRUCT,
 	"static":  STATIC,
 	"return":  RETURN,
+	"break":   BREAK,
 }
 
 type Token struct {

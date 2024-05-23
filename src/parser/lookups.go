@@ -40,12 +40,12 @@ func led(kind lexer.TokenKind, bp binding_power, led_fn led_handler) {
 	led_lu[kind] = led_fn
 }
 
-func nud(kind lexer.TokenKind, bp binding_power, nud_fn nud_handler) {
+func nud(kind lexer.TokenKind, _ binding_power, nud_fn nud_handler) {
 	bp_lu[kind] = primary
 	nud_lu[kind] = nud_fn
 }
 
-func stmt(kind lexer.TokenKind, bp binding_power, stmt_fn stmt_handler) {
+func stmt(kind lexer.TokenKind, _ binding_power, stmt_fn stmt_handler) {
 	bp_lu[kind] = default_bp
 	stmt_lu[kind] = stmt_fn
 }
@@ -97,6 +97,7 @@ func createTokenLookups() {
 	stmt(lexer.STRUCT, default_bp, parse_struct_decl_stmt)
 	stmt(lexer.FN, default_bp, parse_fn_decl_stmt)
 	stmt(lexer.RETURN, default_bp, parse_return_stmt)
+	stmt(lexer.BREAK, default_bp, parse_break_stmt)
 	stmt(lexer.IF, default_bp, parse_if_stmt)
 	stmt(lexer.WHILE, default_bp, parse_while_stmt)
 	stmt(lexer.FOREACH, default_bp, parse_foreach_stmt)

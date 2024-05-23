@@ -151,6 +151,17 @@ func (n Return) Inspect() string {
 	return fmt.Sprintf("<return %g>", n.Value)
 }
 
+type Break struct {
+}
+
+func (b Break) Type() ValueType {
+	return BreakType
+}
+
+func (n Break) Inspect() string {
+	return "<break>"
+}
+
 type ArrayElement struct {
 	ElementType ValueType
 	Value       RuntimeVal

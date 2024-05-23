@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	// interpreter "shipgo/src/interpreter_old"
 	"shipgo/src/interpreter"
 	"shipgo/src/lexer"
 	"shipgo/src/parser"

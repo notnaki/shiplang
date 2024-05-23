@@ -85,6 +85,10 @@ show(date());
 import {g, hey, Rest} from "examples/00.sp";
 //import "examples/00.sp";
 
+foreach (i in []string{"hey", "hello", "blue", "red"}) {
+    break;
+}
+
 let f:Rest = Rest{msg:"go have some rest"};
 show(g);
 show(f.msg);

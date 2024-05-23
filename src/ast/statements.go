@@ -59,6 +59,10 @@ type ReturnStmt struct {
 
 func (n ReturnStmt) stmt() {}
 
+type BreakStmt struct{}
+
+func (n BreakStmt) stmt() {}
+
 type IfStmt struct {
 	IfBody     BlockStmt
 	Condition  Expr

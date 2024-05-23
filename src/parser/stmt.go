@@ -255,6 +255,12 @@ func parse_return_stmt(p *parser) ast.Stmt {
 	}
 }
 
+func parse_break_stmt(p *parser) ast.Stmt {
+	p.advance()
+	p.expect(lexer.SEMI_COLON)
+	return ast.BreakStmt{}
+}
+
 func parse_while_stmt(p *parser) ast.Stmt {
 	p.expect(lexer.WHILE)
 	p.expect(lexer.OPEN_PAREN)

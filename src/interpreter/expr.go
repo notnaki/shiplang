@@ -176,35 +176,6 @@ func eval_comparison_binary_expr(lhs RuntimeVal, rhs RuntimeVal, operator string
 	return MKNULL()
 }
 
-func equals(lhs RuntimeVal, rhs RuntimeVal) bool {
-	switch lhs := lhs.(type) {
-	case NumberVal:
-		rhs, ok := rhs.(NumberVal)
-		return ok && lhs.Value == rhs.Value
-	case BooleanVal:
-		rhs, ok := rhs.(BooleanVal)
-		return ok && lhs.Value == rhs.Value
-	case StringVal:
-		rhs, ok := rhs.(StringVal)
-		return ok && lhs.Value == rhs.Value
-	default:
-		return false
-	}
-}
-
-func truthify(val RuntimeVal) bool {
-	switch v := val.(type) {
-	case NumberVal:
-		return v.Value != 0
-	case BooleanVal:
-		return v.Value
-	case StringVal:
-		return v.Value != ""
-	default:
-		return false
-	}
-}
-
 func eval_call_expr(call ast.CallExpr, env *environment) RuntimeVal {
 
 	switch fnVal := env.lookup_var(call.FunctionName).(Variable).Value.(type) {
@@ -295,42 +266,6 @@ func eval_member_access_expr(ma ast.MemberAccessExpr, env *environment) RuntimeV
 	return memberVal
 }
 
-func assignNestedMember(properties map[string]RuntimeVal, parts []string, value RuntimeVal) {
-
-	if len(parts) == 1 {
-		// Base case: Assign value to the last member
-		properties[parts[0]] = value
-	} else {
-		// Recursive case: Traverse through nested members
-		member := parts[0]
-
-		nestedVal := properties[member]
-		if nestedVal.Type() != StructType {
-			panic(fmt.Sprintf("Cannot access member %s of non-struct type.", member))
-		}
-		assignNestedMember(nestedVal.(StructInstance).Properties, parts[1:], value)
-	}
-}
-
-func getBaseVariableAndNestedMembers(expr ast.MemberAccessExpr) (string, []string) {
-	var baseVarName string
-	var nestedMembers []string
-
-	// Handle the base variable
-	switch e := expr.Struct.(type) {
-	case ast.SymbolExpr:
-		baseVarName = e.Value
-	case ast.MemberAccessExpr:
-		baseVarName, nestedMembers = getBaseVariableAndNestedMembers(e)
-	default:
-		panic("Invalid member access expression.")
-	}
-
-	// Append the current member to the nested members
-	nestedMembers = append(nestedMembers, expr.Member)
-	return baseVarName, nestedMembers
-}
-
 func eval_array_inst_expr(aie ast.ArrayInstantiationExpr, env *environment) RuntimeVal {
 	var elements []ArrayElement
 	declaredType := extractValueType(aie.Underlying)
@@ -393,16 +328,5 @@ func eval_prefix_expr(pr ast.PrefixExpr, env *environment) RuntimeVal {
 		return right
 	default:
 		panic(fmt.Sprintf("unexpected prefix operator: %s", lexer.TokenKindString(pr.Operator.Kind)))
-	}
-}
-
-func negate(r RuntimeVal) RuntimeVal {
-	switch r.(type) {
-	case NumberVal:
-		return MKNUM(-r.(NumberVal).Value)
-	case BooleanVal:
-		return MKBOOL(!r.(BooleanVal).Value)
-	default:
-		panic(fmt.Sprintf("unexpected prefix operator for: %s", r.Type()))
 	}
 }
