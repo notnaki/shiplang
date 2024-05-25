@@ -22,19 +22,16 @@ type VarDeclStmt struct {
 func (n VarDeclStmt) stmt() {}
 
 type StructProperty struct {
-	// IsStatic bool
 	Type Type
 }
 
 type StructMethod struct {
 	IsStatic bool
-	// Type     Type
 }
 
 type StructDeclStmt struct {
 	StructName string
 	Properties map[string]StructProperty
-	Methods    map[string]StructMethod
 }
 
 func (n StructDeclStmt) stmt() {}
@@ -47,6 +44,13 @@ type FnDeclStmt struct {
 }
 
 func (n FnDeclStmt) stmt() {}
+
+type ImplStmt struct {
+	Struct string
+	Method FnDeclStmt
+}
+
+func (n ImplStmt) stmt() {}
 
 type Parameter struct {
 	Name string

@@ -1,4 +1,4 @@
-package interpreter
+package runtime
 
 type ValueType string
 
@@ -19,25 +19,17 @@ const (
 )
 
 func MKNULL() RuntimeVal {
-	return NullVal{}
+	return Null{}
 }
 
 func MKSTR(s string) RuntimeVal {
-	return StringVal{Value: s}
+	return String{Value: s}
 }
 
 func MKNUM(n float64) RuntimeVal {
-	return NumberVal{Value: n}
+	return Number{Value: n}
 }
 
 func MKBOOL(b bool) RuntimeVal {
-	return BooleanVal{Value: b}
-}
-
-func MKNATIVEFN(c FunctionCall) RuntimeVal {
-	return NativeFn{Call: c}
-}
-
-func MKBREAK() RuntimeVal {
-	return Break{}
+	return Bool{Value: b}
 }

@@ -1,8 +1,8 @@
 package parser
 
 import (
-	"shipgo/src/ast"
-	"shipgo/src/lexer"
+	"shiplang/src/ast"
+	"shiplang/src/lexer"
 )
 
 type binding_power int
@@ -38,6 +38,7 @@ var stmt_lu = stmt_lookup{}
 func led(kind lexer.TokenKind, bp binding_power, led_fn led_handler) {
 	bp_lu[kind] = bp
 	led_lu[kind] = led_fn
+
 }
 
 func nud(kind lexer.TokenKind, _ binding_power, nud_fn nud_handler) {
@@ -102,5 +103,6 @@ func createTokenLookups() {
 	stmt(lexer.WHILE, default_bp, parse_while_stmt)
 	stmt(lexer.FOREACH, default_bp, parse_foreach_stmt)
 	stmt(lexer.FOR, default_bp, parse_for_stmt)
+	stmt(lexer.IMPL, default_bp, parse_struct_impl_stmt)
 
 }

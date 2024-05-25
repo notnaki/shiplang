@@ -2,8 +2,8 @@ package parser
 
 import (
 	"fmt"
-	"shipgo/src/ast"
-	"shipgo/src/lexer"
+	"shiplang/src/ast"
+	"shiplang/src/lexer"
 )
 
 func parse_stmt(p *parser) ast.Stmt {
@@ -92,19 +92,13 @@ func parse_struct_decl_stmt(p *parser) ast.Stmt {
 
 	p.expect(lexer.STRUCT)
 	var properties = map[string]ast.StructProperty{}
-	var methods = map[string]ast.StructMethod{}
 	var structName = p.expect(lexer.IDENTIFIER).Value
 
 	p.expect(lexer.OPEN_CURLY)
 
 	for p.hasTokens() && p.currentTokenKind() != lexer.CLOSE_CURLY {
 
-		// var IsStatic bool
 		var propertyName string
-		// if p.currentTokenKind() == lexer.STATIC {
-		// 	IsStatic = true
-		// 	p.expect(lexer.STATIC)
-		// }
 
 		if p.currentTokenKind() == lexer.IDENTIFIER {
 			propertyName = p.expect(lexer.IDENTIFIER).Value
@@ -120,7 +114,6 @@ func parse_struct_decl_stmt(p *parser) ast.Stmt {
 			}
 
 			properties[propertyName] = ast.StructProperty{
-				// IsStatic: IsStatic,
 				Type: structType,
 			}
 
@@ -135,8 +128,20 @@ func parse_struct_decl_stmt(p *parser) ast.Stmt {
 	return ast.StructDeclStmt{
 		StructName: structName,
 		Properties: properties,
-		Methods:    methods,
 	}
+}
+
+func parse_struct_impl_stmt(p *parser) ast.Stmt {
+	p.expect(lexer.IMPL)
+	var structName = p.expect(lexer.IDENTIFIER).Value
+
+	method := parse_fn_decl_stmt(p).(ast.FnDeclStmt)
+
+	return ast.ImplStmt{
+		Struct: structName,
+		Method: method,
+	}
+
 }
 
 func parse_import_stmt(p *parser) ast.Stmt {

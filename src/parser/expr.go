@@ -2,9 +2,10 @@ package parser
 
 import (
 	"fmt"
-	"shipgo/src/ast"
-	"shipgo/src/helpers"
-	"shipgo/src/lexer"
+	"shiplang/src/ast"
+	"shiplang/src/helpers"
+	"shiplang/src/lexer"
+
 	"strconv"
 )
 
@@ -14,6 +15,7 @@ func parse_expr(p *parser, bp binding_power) ast.Expr {
 	nud_fn, exists := nud_lu[tkind]
 
 	if !exists {
+
 		panic(fmt.Sprintf("Not impl nud handler for %s", lexer.TokenKindString(tkind)))
 	}
 
@@ -202,8 +204,17 @@ func parse_grouping_expr(p *parser) ast.Expr {
 }
 
 func parse_call_expr(p *parser, left ast.Expr, bp binding_power) ast.Expr {
+	var functionName string
+	var parentStruct ast.Expr
 
-	functionName := left.(ast.SymbolExpr).Value
+	switch expr := left.(type) {
+	case ast.SymbolExpr:
+		functionName = expr.Value
+	case ast.MemberAccessExpr:
+		functionName = expr.Member
+		parentStruct = expr.Struct
+	}
+
 	p.expect(lexer.OPEN_PAREN) // Consume '('
 
 	// Parse arguments
@@ -213,15 +224,15 @@ func parse_call_expr(p *parser, left ast.Expr, bp binding_power) ast.Expr {
 
 	return ast.CallExpr{
 		FunctionName: functionName,
+		Struct:       parentStruct,
 		Arguments:    args,
 	}
 }
 
-// parse_expr_list parses a list of expressions separated by commas
 func parse_call_params_list(p *parser) []ast.Expr {
-	exprs := make([]ast.Expr, 0)
+	var exprs []ast.Expr
 
-	for p.currentTokenKind() != lexer.CLOSE_PAREN && p.hasTokens() {
+	for p.hasTokens() && p.currentTokenKind() != lexer.CLOSE_PAREN {
 		expr := parse_expr(p, default_bp)
 		exprs = append(exprs, expr)
 

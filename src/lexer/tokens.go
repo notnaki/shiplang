@@ -78,6 +78,7 @@ const (
 
 	STRUCT
 	STATIC
+	IMPL
 
 	RETURN
 	BREAK
@@ -92,6 +93,7 @@ var reserved_words map[string]TokenKind = map[string]TokenKind{
 	"class":   CLASS,
 	"new":     NEW,
 	"import":  IMPORT,
+	"impl":    IMPL,
 	"from":    FROM,
 	"fn":      FN,
 	"if":      IF,

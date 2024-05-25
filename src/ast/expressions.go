@@ -1,6 +1,6 @@
 package ast
 
-import "shipgo/src/lexer"
+import "shiplang/src/lexer"
 
 type NumberExpr struct {
 	Value float64
@@ -77,6 +77,7 @@ func (n ArrayAccessExpr) expr() {}
 
 type CallExpr struct {
 	FunctionName string
+	Struct       Expr
 	Arguments    []Expr
 }
 

@@ -2,8 +2,8 @@ package parser
 
 import (
 	"fmt"
-	"shipgo/src/ast"
-	"shipgo/src/lexer"
+	"shiplang/src/ast"
+	"shiplang/src/lexer"
 )
 
 type parser struct {
