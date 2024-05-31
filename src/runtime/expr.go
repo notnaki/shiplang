@@ -222,6 +222,25 @@ func eval_call_expr(c ast.CallExpr, env *environment) RuntimeVal {
 		return handle_method_call(c, env)
 	}
 
+	v := env.containsVar(c.FunctionName)
+	if v {
+		// Check if the variable value is a function reference
+		v := env.Variables[c.FunctionName]
+		if fnRef, ok := v.Value.(Function); ok {
+			// Evaluate arguments
+			callEnv := &environment{Variables: make(map[string]Variable), Parent: env}
+			for i, param := range fnRef.Parameters {
+
+				callEnv.declareVar(param.Name, eval_expr(c.Arguments[i], callEnv), param.Type, false)
+			}
+			// Call the referenced function
+			return Evaluate(fnRef.Body, callEnv)
+		} else {
+			// Handle the case where the variable is not a function reference
+			panic(fmt.Sprintf("%s is not a function reference", c.FunctionName))
+		}
+	}
+
 	fnVal, ok := env.lookupFn(c.FunctionName).(Function)
 
 	if !ok {

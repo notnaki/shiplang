@@ -1,9 +1,35 @@
 package runtime
 
 import (
+	"bufio"
 	"fmt"
+	"os"
+	"strings"
 	"time"
 )
+
+func inputFN(args []RuntimeVal) RuntimeVal {
+	// Prompt the user to enter input
+
+	if len(args) > 0 {
+		// Extract the prompt message from the arguments
+		prompt := args[0].(String).Value
+		// Print the prompt message
+		fmt.Print(prompt)
+	}
+
+	reader := bufio.NewReader(os.Stdin)
+	input, err := reader.ReadString('\n')
+	if err != nil {
+		panic("Error reading input: " + err.Error())
+	}
+
+	// Remove newline character from the input
+	input = strings.TrimSpace(input)
+
+	// Return the input as a string
+	return MKSTR(input)
+}
 
 func showFN(args []RuntimeVal) RuntimeVal {
 	for i, arg := range args {

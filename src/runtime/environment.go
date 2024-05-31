@@ -1,6 +1,8 @@
 package runtime
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type environment struct {
 	Parent     *environment
@@ -96,6 +98,7 @@ func (e *environment) declareFn(fn Function) RuntimeVal {
 	}
 
 	e.Functions[fn.Name] = fn
+	e.declareVar(fn.Name, fn, FunctionType, true)
 
 	return fn
 }
@@ -174,4 +177,23 @@ func (e *environment) assignStruct(varName string, memberName string, value Runt
 
 func (e *environment) declareNativeFn(fnName string, call FunctionCall) {
 	e.Functions[fnName] = Function{Name: fnName, NativeFn: NativeFunction{call}}
+}
+
+func (e *environment) addImport(importedEnv *environment, modules []string) *environment {
+
+	for _, name := range modules {
+		if structDef, exists := importedEnv.StructDefs[name]; exists {
+			e.StructDefs[name] = structDef
+		}
+
+		if function, exists := importedEnv.Functions[name]; exists {
+			e.Functions[name] = function
+		}
+
+		if variable, exists := importedEnv.Variables[name]; exists {
+			e.Variables[name] = variable
+		}
+	}
+
+	return e
 }

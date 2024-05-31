@@ -88,7 +88,9 @@ func declareNativeValues(env environment) {
 }
 func declareNativeFunctions(env environment) {
 	env.declareNativeFn("show", showFN)
+	env.declareNativeFn("ask", inputFN)
 	env.declareNativeFn("time", timeFN)
 	env.declareNativeFn("date", dateFN)
 	env.declareNativeFn("range", rangeFN)
+
 }

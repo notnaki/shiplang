@@ -31,6 +31,8 @@ func Evaluate(node ast.Stmt, env *environment) RuntimeVal {
 		return eval_for_stmt(n, env)
 	case ast.ForeachStmt:
 		return eval_foreach_stmt(n, env)
+	case ast.ImportStmt:
+		return eval_import_stmt(n, env)
 	default:
 		panic(fmt.Sprintf("Stmt not setup got %s", n))
 	}

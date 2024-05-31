@@ -1,7 +1,11 @@
 package runtime
 
 import (
+	"fmt"
+	"os"
 	"shiplang/src/ast"
+	"shiplang/src/lexer"
+	"shiplang/src/parser"
 )
 
 func eval_block_stmt(s ast.BlockStmt, env *environment) RuntimeVal {
@@ -210,6 +214,28 @@ func eval_foreach_stmt(fe ast.ForeachStmt, env *environment) RuntimeVal {
 		}
 	default:
 		panic("")
+	}
+
+	return MKNULL()
+}
+
+func eval_import_stmt(im ast.ImportStmt, env *environment) RuntimeVal {
+
+	bytes, err := os.ReadFile(im.FilePath)
+	if err != nil {
+		fmt.Printf("Error reading file: %v\n", err)
+		os.Exit(1)
+	}
+
+	tokens := lexer.Tokenize(string(bytes))
+	ast := parser.Parse(tokens)
+
+	if len(im.Modules) > 0 {
+		moduleEnv := NewEnv(nil)
+		Evaluate(ast, moduleEnv)
+		env.addImport(moduleEnv, im.Modules)
+	} else {
+		Evaluate(ast, env)
 	}
 
 	return MKNULL()

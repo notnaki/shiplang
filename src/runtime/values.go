@@ -186,6 +186,12 @@ func (s String) CallMethod(methodName string, args ...RuntimeVal) RuntimeVal {
 	switch methodName {
 	case "length":
 		return MKNUM(float64(len(s.Value)))
+	case "toNum":
+		num, err := strconv.ParseFloat(s.Value, 64)
+		if err != nil {
+			panic("toNum method failed: " + err.Error())
+		}
+		return MKNUM(num)
 	case "concat":
 		if len(args) != 1 {
 			panic("concat method expects exactly 1 argument")

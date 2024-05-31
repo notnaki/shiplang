@@ -173,19 +173,11 @@ func parse_import_stmt(p *parser) ast.Stmt {
 		p.expect(lexer.CLOSE_CURLY)
 	}
 
-	// Check if there's a "from" keyword
 	if len(modules) > 0 {
 		p.expectError(lexer.FROM, "Expected 'from' keyword after module names")
 	} else if len(modules) == 0 && p.currentTokenKind() == lexer.FROM {
 		panic("Unexpected 'from' keyword without module names")
 	}
-
-	// Consume the "from" keyword
-	// if p.currentTokenKind() == lexer.FROM {
-	// 	p.advance()
-	// }
-
-	// Expect and parse the file path
 
 	path := p.expectError(lexer.STRING, "Expected string literal for file path").Value
 
