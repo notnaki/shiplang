@@ -64,3 +64,4 @@ struct HelloWorld{
 
 let hellow = HelloWorld{msg:"Hello World", num:42};
 show(hellow);
+ask("How are you");
